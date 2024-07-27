@@ -6,7 +6,123 @@
     <title>Points Calculator</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #000000, rgb(0, 0, 0));
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 30px;
+            max-width: 900px;
+        }
+
+        .header h1 {
+            color: #0f0001;
+            font-weight: bold;
+            font-size: 2em;
+            margin-bottom: 0.5em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .table {
+            margin-bottom: 1rem;
+            background-color: transparent;
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+            background: linear-gradient(135deg, #ff4e50, #a00);
+            color: white;
+            font-size: 0.875em;
+        }
+
+        .table tbody tr:nth-child(odd) {
+            background-color: #ffe5e5;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        .table tbody tr:hover {
+            background-color: #ffd1d1;
+        }
+
+        .table th, .table td {
+            border: none;
+            text-align: center;
+            padding: 0.5rem;
+            vertical-align: middle;
+            font-size: 0.875em;
+        }
+
+        .table th:first-child, .table td:first-child {
+            border-radius: 15px 0 0 15px;
+        }
+
+        .table th:last-child, .table td:last-child {
+            border-radius: 0 15px 15px 0;
+        }
+
+        .footer {
+            color: #333;
+            font-size: 0.875em;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .footer a {
+            color: #ff4e50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .organized-by {
+            margin-top: 10px;
+            color: rgb(2, 2, 2);
+            font-weight: bold;
+            font-size: 1em;
+            text-align: left;
+        }
+
+        /* Print styles */
+        @media print {
+            .btn-print {
+                display: none;
+            }
+
+            .print-icon {
+                display: block;
+                font-size: 1.5em;
+                text-align: center;
+                margin-top: 20px;
+            }
+        }
+
+        .print-icon {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-control {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875em;
+        }
+    </style>
 </head>
 <body>
     <div class="container my-5">
@@ -42,6 +158,7 @@
                         <td><input type="number" class="form-control" placeholder="Kill PTS" oninput="calculateAndSort(this)"></td>
                         <td><input type="number" class="form-control" placeholder="Total" readonly></td>
                     </tr>
+                    <!-- Additional rows -->
                     <tr>
                         <td>3</td>
                         <td><input type="text" class="form-control" placeholder="Team Name"></td>
@@ -125,10 +242,40 @@
                 </tbody>
             </table>
         </div>
+        <div class="text-center">
+            <button class="btn btn-primary btn-print" onclick="window.print()">Print</button>
+            <i class="fas fa-print print-icon"></i>
+        </div>
+        <div class="organized-by text-left">
+            <strong>Organized by: Soy</strong>
+        </div>
+        <!-- <div class="footer">
+            For more details, visit our <a href="#">website</a>.
+        </div> -->
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="script.js"></script>
+
+    <script>
+        function calculateAndSort(input) {
+            const row = input.closest('tr');
+            const placePts = parseFloat(row.querySelector('input[placeholder="Place PTS"]').value) || 0;
+            const killPts = parseFloat(row.querySelector('input[placeholder="Kill PTS"]').value) || 0;
+            const total = placePts + killPts;
+            row.querySelector('input[placeholder="Total"]').value = total;
+
+            const tbody = row.closest('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                const totalA = parseFloat(a.querySelector('input[placeholder="Total"]').value) || 0;
+                const totalB = parseFloat(b.querySelector('input[placeholder="Total"]').value) || 0;
+                return totalB - totalA;
+            });
+
+            rows.forEach((r, index) => {
+                r.querySelector('td:first-child').textContent = index + 1;
+                tbody.appendChild(r);
+            });
+        }
+    </script>
 </body>
 </html>
