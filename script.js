@@ -1,24 +1,21 @@
-function calculateAndSort(input) {
-    let row = input.closest('tr');
-    let placePts = parseFloat(row.querySelector('input[placeholder="Place PTS"]').value) || 0;
-    let killPts = parseFloat(row.querySelector('input[placeholder="Kill PTS"]').value) || 0;
-    let total = placePts + killPts;
+function calculateAndSort(inputElement) {
+            const row = inputElement.closest('tr');
+            const placePts = parseFloat(row.querySelector('input[placeholder="Place PTS"]').value) || 0;
+            const killPts = parseFloat(row.querySelector('input[placeholder="Kill PTS"]').value) || 0;
+            const totalPts = placePts + killPts;
+            row.querySelector('input[placeholder="Total"]').value = totalPts;
 
-    row.querySelector('input[placeholder="Total"]').value = total;
+            const tableBody = document.querySelector('tbody');
+            const rows = Array.from(tableBody.querySelectorAll('tr'));
 
-    sortTable();
-}
+            rows.sort((a, b) => {
+                const totalA = parseFloat(a.querySelector('input[placeholder="Total"]').value) || 0;
+                const totalB = parseFloat(b.querySelector('input[placeholder="Total"]').value) || 0;
+                return totalB - totalA;
+            });
 
-function sortTable() {
-    let table = document.querySelector('table tbody');
-    let rows = Array.from(table.rows);
-
-    rows.sort((a, b) => {
-        let totalA = parseFloat(a.querySelector('input[placeholder="Total"]').value) || 0;
-        let totalB = parseFloat(b.querySelector('input[placeholder="Total"]').value) || 0;
-
-        return totalB - totalA;
-    });
-
-    rows.forEach(row => table.appendChild(row));
-}
+            rows.forEach((row, index) => {
+                row.querySelector('td:first-child').innerText = index + 1;
+                tableBody.appendChild(row);
+            });
+        }
